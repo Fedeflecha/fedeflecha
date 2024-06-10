@@ -2,18 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, FlatList, TextInput, Button } from 'react-native';
 import axios from 'axios';
 
-export default function OVERSTOCKAPP() {
+export default function App() {
   const [projects, setProjects] = useState([]);
   const [newProject, setNewProject] = useState('');
 
   useEffect(() => {
     axios.get('https://overstockapp.glitch.me/proyectos')
       .then(response => {
-        if (Array.isArray(response.data)) {
-          setProjects(response.data);
-        } else {
-          console.error('La respuesta del servidor no es una lista:', response.data);
-        }
+        setProjects(response.data);
       })
       .catch(error => {
         console.error('Error al obtener datos del servidor', error);
@@ -27,12 +23,8 @@ export default function OVERSTOCKAPP() {
     }
     axios.post('https://overstockapp.glitch.me/proyectos', { nombre: newProject })
       .then(response => {
-        if (response.data && response.data.id) {
-          setProjects([...projects, response.data]);
-          setNewProject('');
-        } else {
-          console.error('Error en la respuesta al crear el proyecto:', response.data);
-        }
+        setProjects([...projects, response.data]);
+        setNewProject('');
       })
       .catch(error => {
         alert('Error al crear el proyecto. Por favor, intenta de nuevo.');
@@ -40,19 +32,17 @@ export default function OVERSTOCKAPP() {
       });
   };
 
-  const renderItem = ({ item }) => (
-    <View style={styles.projectItem}>
-      <Text style={styles.projectText}>{item.nombre}</Text>
-    </View>
-  );
-
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Proyectos</Text>
       <FlatList
         data={projects}
-        keyExtractor={(item) => item.id ? item.id.toString() : Math.random().toString()}
-        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.projectItem}>
+            <Text style={styles.projectText}>{item.nombre}</Text>
+          </View>
+        )}
       />
       <TextInput
         style={styles.input}
