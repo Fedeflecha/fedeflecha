@@ -24,7 +24,7 @@ jobs:
       - name: Unzip sitio.zip
         run: |
           mkdir site
-          unzip -o sitio.zip -d site
+          unzip -o site.zip -d site
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
