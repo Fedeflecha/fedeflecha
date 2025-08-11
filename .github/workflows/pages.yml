@@ -1,7 +1,8 @@
 name: Deploy zipped site to GitHub Pages
+
 on:
   push:
-    branches: [ "main" ]
+    branches: ["master", "main"]
   workflow_dispatch:
 
 permissions:
@@ -19,13 +20,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Unzip site.zip
+
+      - name: Unzip sitio.zip
         run: |
-          mkdir site && unzip -o site.zip -d site
+          mkdir site && unzip -o sitio.zip -d site
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: site
+
       - name: Deploy to Pages
         id: deployment
         uses: actions/deploy-pages@v4
