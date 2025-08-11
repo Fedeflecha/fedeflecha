@@ -1,8 +1,9 @@
-name: Implementar un sitio comprimido en GitHub Pages
+name: Deploy zipped site to GitHub Pages
 
 on:
   push:
-    branches: ["maestro", "principal", "master"]
+    branches: ["maestro", "master", "main"]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -17,18 +18,26 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Verificar
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Descomprimir site.zip
-        run: |
-          mkdir site && unzip -o site.zip -d site
+      - name: List repo (debug)
+        run: ls -la
 
-      - name: Subir artefacto
-        uses: actions/upload-pages-artifact@v2
+      - name: Ensure ZIP exists
+        run: |
+          test -f site.zip || (echo "site.zip not found in repo root" && exit 9)
+
+      - name: Unzip site.zip
+        run: |
+          mkdir -p site
+          unzip -o site.zip -d site
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: site
 
-      - name: Implementar en páginas
+      - name: Deploy to Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
